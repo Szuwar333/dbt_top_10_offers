@@ -1,0 +1,13 @@
+
+version: 2
+
+sources:
+  - name: raw
+    schema: mw_jobs
+    database: mydedb
+    description: "A starter dbt model"
+
+    tables:
+      - name: nofluffjobs_jobs
+      - name: devitjobs_jobs
+      - name: currency_rates
