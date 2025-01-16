@@ -9,5 +9,6 @@ select
     currency,
     source,
     created_at,
-    job_type
+    job_type,
+    migration_batch_id
 from salary_range

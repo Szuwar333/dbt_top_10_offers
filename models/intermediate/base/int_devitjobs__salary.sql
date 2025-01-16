@@ -3,8 +3,9 @@ with salary as (
         id,
         annual_salary_from,
         annual_salary_to,
-        currency,
-        created_at
+        'GBP' as currency,
+        created_at,
+        migration_batch_id
     from {{ ref('stg_devitjobs') }}
 )
 select
@@ -13,6 +14,7 @@ select
     cast(annual_salary_to as numeric)/12 as rate_to,
     currency,
     created_at,
-    'b2b' job_type
+    'b2b' job_type,
+    migration_batch_id
 from salary
 

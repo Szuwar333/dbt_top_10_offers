@@ -7,7 +7,22 @@ currency as (
         *
     from {{ ref('stg_currency_rates') }}
 ),
-salary_with_currency_tmp as(
+migration_batches as (
+	select *
+	from {{ ref('stg_migration_batches') }}
+),
+migration_batches_with_currency as (
+	select
+		migration_batches.id migration_batch_id,
+		migration_batches.started_at,
+		cur_1.rate,
+		cur_1.base,
+		cur_1.target,
+		cur_1.created_at cur_created_at
+	from migration_batches join currency cur_1 on migration_batches.started_at>cur_1.created_at
+	where  cur_1.created_at = (select max(cur_2.created_at) from currency as cur_2 where cur_2.base=cur_1.base and cur_2.target=cur_1.target)
+),
+salary_with_currency as(
     select
         salary.id,
         salary.source,
@@ -15,29 +30,12 @@ salary_with_currency_tmp as(
         salary.rate,
         salary.created_at,
         salary.job_type,
-        cr1.rate cur_rate,
-        cr1.base,
-        cr1.target,
-        cr1.created_at cur_created_at
-    from salary left join currency as cr1 on (
-        (salary.currency=cr1.base or salary.currency=cr1.target)
-        and salary.created_at>cr1.created_at
-    )
-),
-salary_with_currency as (
-    select
-        s1.id,
-        s1.source,
-        s1.currency,
-        s1.rate,
-        s1.created_at,
-        s1.cur_rate,
-        s1.base,
-        s1.target,
-        s1.cur_created_at,
-        s1.job_type
-    from salary_with_currency_tmp s1
-    where s1.cur_created_at = (select max(cur.created_at) from currency as cur where cur.base=s1.base and cur.target=s1.target)
+		salary.migration_batch_id,
+        migr_cur.rate cur_rate,
+        migr_cur.base,
+        migr_cur.target,
+        migr_cur.cur_created_at
+    from salary join migration_batches_with_currency migr_cur on  migr_cur.migration_batch_id=salary.migration_batch_id and (salary.currency=migr_cur.base or salary.currency=migr_cur.target)
 ),
 salary_pln as(
 	select
@@ -47,7 +45,8 @@ salary_pln as(
 			case when salary.currency='PLN' then salary.rate
 				when salary_with_currency.base='PLN' then salary.rate/salary_with_currency.cur_rate
 				when salary_with_currency.target='PLN' then salary.rate*salary_with_currency.cur_rate
-			end as rate_pln
+			end as rate_pln,
+			salary.migration_batch_id
 		from salary left  join salary_with_currency on (
  			salary.id=salary_with_currency.id and
 			salary.source = salary_with_currency.source  and
@@ -60,16 +59,13 @@ salary_eur as(
 	select
 			salary.id,
 			salary.source,
-			salary.currency,
-			salary_with_currency.cur_rate,
-			salary_with_currency.base,
-			salary_with_currency.target,
 			salary.job_type,
 			salary_with_currency.cur_created_at,
 			case when salary.currency='EUR' then salary.rate
 				when salary_with_currency.base='EUR' then salary.rate/salary_with_currency.cur_rate
 				when salary_with_currency.target='EUR' then salary.rate*salary_with_currency.cur_rate
-			end as rate_eur
+			end as rate_eur,
+			salary.migration_batch_id
 		from salary left  join salary_with_currency on (
  			salary.id=salary_with_currency.id and
 			salary.source = salary_with_currency.source  and
@@ -86,7 +82,8 @@ salary_usd as(
 			case when salary.currency='USD' then salary.rate
 				when salary_with_currency.base='USD' then salary.rate/salary_with_currency.cur_rate
 				when salary_with_currency.target='USD' then salary.rate*salary_with_currency.cur_rate
-			end as rate_usd
+			end as rate_usd,
+			salary.migration_batch_id
 		from salary left  join salary_with_currency on (
  			salary.id=salary_with_currency.id and
 			salary.source = salary_with_currency.source  and
@@ -101,8 +98,17 @@ select
     salary_eur.job_type,
     salary_eur.rate_eur,
     salary_usd.rate_usd,
-    salary_pln.rate_pln
+    salary_pln.rate_pln,
+	salary_eur.migration_batch_id
 from salary_eur
-join salary_usd on salary_usd.id=salary_eur.id and salary_usd.source=salary_eur.source and salary_usd.job_type=salary_eur.job_type
-join salary_pln on salary_pln.id=salary_eur.id and salary_pln.source=salary_eur.source and salary_pln.job_type=salary_eur.job_type
+	join salary_usd on
+		salary_usd.id=salary_eur.id and
+		salary_usd.source=salary_eur.source and
+		salary_usd.job_type=salary_eur.job_type and
+		salary_usd.migration_batch_id=salary_eur.migration_batch_id
+	join salary_pln on
+		salary_pln.id=salary_eur.id and
+		salary_pln.source=salary_eur.source and
+		salary_pln.job_type=salary_eur.job_type and
+		salary_pln.migration_batch_id=salary_eur.migration_batch_id
 order by salary_eur.id

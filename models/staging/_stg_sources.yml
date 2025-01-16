@@ -11,3 +11,4 @@ sources:
       - name: nofluffjobs_jobs
       - name: devitjobs_jobs
       - name: currency_rates
+      - name: migration_batches
