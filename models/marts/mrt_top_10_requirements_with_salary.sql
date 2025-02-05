@@ -15,12 +15,12 @@ top_10_with_salary as (
 		salary.rate_eur,
 		salary.rate_usd,
 		salary.rate_pln,
-		salary.id,
+		salary.offer_id,
 		salary.job_type,
 		salary.source
 	from top_10
 	join req on req.requirement=top_10.requirement
-	join salary on req.id=salary.id and salary.source=req.source
+	join salary on req.offer_id=salary.offer_id and salary.source=req.source
 )
 select
     min(rate_eur) min_rate_eur,

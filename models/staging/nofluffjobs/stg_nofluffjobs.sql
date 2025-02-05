@@ -1,10 +1,10 @@
 select
-    id,
+    id offer_id,
     source_id,
+    migration_batch_id,
     url,
     name,
-    created_at,
     requirements,
     essentials,
-    migration_batch_id
+    created_at
 from   {{ source('raw', 'nofluffjobs_jobs') }}

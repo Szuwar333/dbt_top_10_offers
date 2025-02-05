@@ -19,12 +19,12 @@ requirements_with_ranking as(
 		quantity
 	from requirements_with_quantity
 )
-	select
-		ranking_within_batch_id,
-		requirement,
-		migration_batch_id,
-		quantity
-	from
-		requirements_with_ranking
-		where ranking_within_batch_id<=10
-		order by migration_batch_id desc, ranking_within_batch_id
+select
+	ranking_within_batch_id,
+	requirement,
+	migration_batch_id,
+	quantity
+from
+	requirements_with_ranking
+	where ranking_within_batch_id<=10
+	order by migration_batch_id desc, ranking_within_batch_id

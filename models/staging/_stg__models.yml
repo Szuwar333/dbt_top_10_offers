@@ -1,0 +1,25 @@
+
+version: 2
+
+models:
+  - name: stg_devitjobs
+    description: "Staging data for devitjobs_jobs"
+    schema: staging
+    database: mydedb
+    columns:
+      - name: migration_batch_id
+        description: "Migration batch id"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+
+  - name: stg_nofluffjobs
+    description: "Staging data for nofluffjobs_jobs"
+    schema: staging
+    database: mydedb
+    columns:
+      - name: migration_batch_id
+        description: "Migration batch id"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist

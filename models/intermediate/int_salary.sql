@@ -4,11 +4,11 @@ with salary_range as (
     select *, 'No_Fluff_Jobs' as source from {{ ref('int_nofluffjobs__salary') }}
 )
 select
-    id,
-    (rate_from + rate_to) / 2 as rate,
+    offer_id,
+    migration_batch_id,
+    (rate_from + COALESCE(rate_to, rate_from)) / 2 as rate,
     currency,
     source,
-    created_at,
     job_type,
-    migration_batch_id
+    created_at
 from salary_range

@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: int_devitjobs__offers
+    description: "Intermediate data - offers for devitjobs_jobs"
+    schema: intermediate
+    database: mydedb
+    columns:
+      - name: rate
+        description: "Migration batch id"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
