@@ -13,8 +13,8 @@ select
     migration_batch_id,
     currency,
     'b2b' job_type,
-    cast(annual_salary_from as numeric)/12 as rate_from,
-    cast(annual_salary_to as numeric)/12 as rate_to,
+    {{ annual_to_month('annual_salary_from') }} as rate_from,
+    {{ annual_to_month('annual_salary_to') }} as rate_to,
     created_at
 from salary
 

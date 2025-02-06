@@ -17,10 +17,10 @@ top_10_with_salary as (
 		salary.rate_pln,
 		salary.offer_id,
 		salary.job_type,
-		salary.source
+		salary.origin_source
 	from top_10
 	join req on req.requirement=top_10.requirement
-	join salary on req.offer_id=salary.offer_id and salary.source=req.source
+	join salary on req.offer_id=salary.offer_id and salary.origin_source=req.origin_source
 )
 select
     min(rate_eur) min_rate_eur,

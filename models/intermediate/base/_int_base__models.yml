@@ -2,12 +2,34 @@ version: 2
 
 models:
   - name: int_devitjobs__offers
-    description: "Intermediate data - offers for devitjobs_jobs"
+    description: "Intermediate data - offers from devitjobs_jobs"
     schema: intermediate
     database: mydedb
     columns:
-      - name: rate
-        description: "Migration batch id"
+      - name: offer_id
+        description: "Offer id from devitjobs_jobs"
         tests:
           - not_null
           - dbt_expectations.expect_column_to_exist
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - offer_id
+            - migration_batch_id
+
+  - name: int_nofluffjobs__offers
+    description: "Intermediate data - offers from nofluffjobs_jobs"
+    schema: intermediate
+    database: mydedb
+    columns:
+      - name: offer_id
+        description: "Offer id from nofluffjobs_jobs"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - offer_id
+            - migration_batch_id
+

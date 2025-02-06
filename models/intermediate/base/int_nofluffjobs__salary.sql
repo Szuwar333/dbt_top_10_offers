@@ -56,7 +56,7 @@ salary_period as (
 			when lower(salary::json->>'period') = 'year' then 1/12
 			else 1
 		end as multiplier,
-		salary::json->'range'->>0 rate_from ,
+		salary::json->'range'->>0 rate_from,
 		salary::json->'range'->>1  rate_to,
 		created_at
 	from salary_all
