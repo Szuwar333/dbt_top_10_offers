@@ -4,7 +4,7 @@ version: 2
 sources:
   - name: raw
     schema: mw_jobs
-    database: mydedb
+    database: "{{ env_var('DB_NAME', 'mydedb') }}"
     description: "A starter dbt model"
 
     tables:

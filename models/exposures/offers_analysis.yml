@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+
+  - name: offers_analysis
+    label: Offers             # optional
+    type: analysis                         # required
+    description: >                          # optional
+      Analysis with offers from different sources
+
+    depends_on:                             # expected
+      - ref('int_offers')
+      - ref('stg_devitjobs')
+      - ref('stg_nofluffjobs')
+
+    owner:
+      name: Michal Wierzbowski
+      email: michal.wierzbowski@stxnext.pl

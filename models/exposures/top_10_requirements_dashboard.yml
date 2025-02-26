@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+
+  - name: top_10_requirements_dashboard
+    label: Top 10 requirements       # optional
+    type: dashboard                         # required
+    description: >                          # optional
+      Dashboard with top 10 requirements with salary
+
+    depends_on:                             # expected
+      - ref('mrt_top_10_requirements_with_salary')
+      - ref('int_requirements_10_most_common')
+      - ref('int_requirements')
+
+    owner:
+      name: Michal Wierzbowski
+      email: michal.wierzbowski@stxnext.pl

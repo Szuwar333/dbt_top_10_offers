@@ -1,0 +1,18 @@
+version: 2
+
+exposures:
+
+  - name: migration_dashboard
+    label: Migration             # optional
+    type: dashboard                         # required
+    description: >                          # optional
+      Dashboard with migration batches
+
+    depends_on:                             # expected
+      - ref('int_migration_batches_with_currency')
+      - ref('stg_migration_batches')
+      - source('raw', 'migration_batches')
+
+    owner:
+      name: Michal Wierzbowski
+      email: michal.wierzbowski@stxnext.pl

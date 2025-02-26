@@ -1,0 +1,24 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:12.14
+    environment:
+      POSTGRES_USER: deuser
+      POSTGRES_PASSWORD: mojekonietoniemy
+      POSTGRES_DB: mydedb
+    volumes:
+      - /opt/volumens/decamp/postgresql:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  mydbt:
+    image: mydbt
+    build: .
+    # volumes:
+    #   - /opt/volumens/decamp/dbt:/dbt
+    # ports:
+    #   - "8080:8080"
+    depends_on:
+      - postgres
+    # command: >
+    #   dbt run --profiles-dir /dbt
