@@ -1,4 +1,6 @@
 dbt-postgres==1.8.2
 sqlfluff==3.3.1
-python-dotenv
 # sqlfluff-templater-dbt==3.3.1
+elementary-data==0.16.2
+python-dotenv==1.0.1
+

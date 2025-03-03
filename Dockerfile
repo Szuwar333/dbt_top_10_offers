@@ -17,12 +17,12 @@ COPY macros macros
 COPY dbt_project.yml dbt_project.yml
 COPY profiles.yml profiles.yml
 COPY packages.yml packages.yml
-COPY run_dbt.py run_dbt.py
+COPY entrypoint.py entrypoint.py
 # COPY requirements.txt requirements.txt
 # COPY packages.yml packages.yml
 # COPY dbt_run.py /usr/python/
 RUN dbt deps
 
 # CMD dbt run --profiles-dir /dbt
-CMD ["python", "run_dbt.py"]
+CMD ["python", "entrypoint.py"]
 

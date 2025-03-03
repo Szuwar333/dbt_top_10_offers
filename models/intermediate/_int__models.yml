@@ -16,7 +16,7 @@ models:
           combination_of_columns:
             - offer_id
             - migration_batch_id
-            - source
+            - source_id
 
   - name: int_salary
     description: "Intermediate data - salary from all sources, information about salary, currency, rate"
