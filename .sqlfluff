@@ -1,5 +1,12 @@
 [sqlfluff]
+dialect = trino
 templater = dbt
+# main
+max_line_length = 120
+# taken from `development` branch
+runaway_limit = 10
+# taken from `development` branch
+indent_unit = space
 
 [sqlfluff:templater:jinja]
 apply_dbt_builtins = True
@@ -11,3 +18,41 @@ dbt_source = {% macro source(source_name, table) %}{{source_name}}_{{table}}{% e
 dbt_config = {% macro config() %}{% for k in kwargs %}{% endfor %}{% endmacro %}
 dbt_var = {% macro var(variable, default='') %}item{% endmacro %}
 dbt_is_incremental = {% macro is_incremental() %}True{% endmacro %}
+
+
+# dbt templating does not keep trailing new lines (L009)
+# Rules to be checked -> RF02,RF05,AL03,ST03,AM06
+exclude_rules = L009,RF01,RF02,RF05,AL03,ST03,AM06,ST06
+large_file_skip_byte_limit = 0
+
+# The following settings are from the PLY development branch
+[sqlfluff:indentation]
+tab_space_size = 4
+
+[sqlfluff:layout:type:comma]
+spacing_before = touch
+line_position = trailing
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:aliasing.table]
+aliasing = explicit
+
+[sqlfluff:rules:aliasing.column]
+aliasing = explicit
+
+[sqlfluff:rules:aliasing.expression]
+allow_scalar = False
+
+[sqlfluff:rules:capitalisation.identifiers]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.literals]
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:ambiguous.column_references]
+group_by_and_order_by_style = implicit
