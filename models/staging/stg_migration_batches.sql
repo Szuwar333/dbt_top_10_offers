@@ -5,4 +5,4 @@ select
     migrated_records_count,
     started_at,
     finished_at
-from   {{ source('raw', 'migration_batches') }}
+from {{ source('raw', 'migration_batches') }}

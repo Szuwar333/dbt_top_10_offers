@@ -23,3 +23,37 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_to_exist
+
+  - name: stg_currency_rates
+    description: "Information about currency rates"
+    schema: staging
+    database: mydedb
+    tests:
+      - dbt_utils.recency:
+          datepart: day
+          field: created_at
+          interval: 3
+    columns:
+      - name: base
+        description: "Currency base"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+      - name: target
+        description: "Currency target"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+      - name: rate
+        description: "Currency rate"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: created_at
+        description: "Date when the rate was created"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
