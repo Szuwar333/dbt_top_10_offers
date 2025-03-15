@@ -24,6 +24,9 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 on-run-start: "{{ add_performance_summarize('start') }}"
 on-run-end: "{{ add_performance_summarize('end') }}"
+
+flags:
+  source_freshness_run_project_hooks: True
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -45,3 +48,7 @@ models:
       +schema: marts
   elementary:
     +schema: "elementary"
+
+tests:
+  +meta:
+    alert_suppression_interval: "{{ env_var('ALERT_SUPPRESSION_INTERVAL', 0)|int }}" # hours

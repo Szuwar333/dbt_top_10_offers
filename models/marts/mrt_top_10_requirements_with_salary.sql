@@ -108,7 +108,7 @@ top_10_with_salary_with_grouped_rates_and_migration_batches as (
 
 select
     ----------------- ids
-	migration_batch_id,
+    migration_batch_id,
 
     ----------------- strings
     requirement,

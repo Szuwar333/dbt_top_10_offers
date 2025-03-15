@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: mrt_top_10_requirements_with_salary
+
+    description: "Top 10 requirements with salary in 3 currencies - USD, EUR, PLN"
+    schema: marts
+    database: mydedb
+    columns:
+      - name: requirement
+        description: "Requirement name"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+
+    freshness:
+      warn_after:
+        count: 1
+        period: day
+      error_after:
+        count: 3
+        period: day
+
+    loaded_at_field: migration_started_at
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - requirement

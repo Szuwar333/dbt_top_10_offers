@@ -33,6 +33,10 @@ models:
           datepart: day
           field: created_at
           interval: 3
+          meta:
+            description: "Currency rates are older than 3 days"
+            alert_fields: ["description", "table", "result_message", "test_parameters" ]
+
     columns:
       - name: base
         description: "Currency base"
