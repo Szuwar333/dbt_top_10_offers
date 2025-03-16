@@ -1,6 +1,6 @@
 select
     ---------- ids
-    id offer_id,
+    id as offer_id,
     source_id,
     migration_batch_id,
 
@@ -14,4 +14,4 @@ select
     annual_salary_to,
     created_at
 from {{ source('raw', 'devitjobs_jobs') }}
-where tech_category='Data'
+where tech_category = 'Data'

@@ -1,2 +1,2 @@
 #!/bin/bash
-sqlfluff lint $0 --dialect ansi
+sqlfluff lint models

@@ -1,10 +1,18 @@
 select
-    id offer_id,
+    ---------- ids
+    id as offer_id,
     source_id,
     migration_batch_id,
+
+    ---------- strings
     url,
     name,
+
+    ---------- jsons
     requirements,
     essentials,
+
+    ---------- timestamps
     created_at
-from   {{ source('raw', 'nofluffjobs_jobs') }}
+
+from {{ source('raw', 'nofluffjobs_jobs') }}

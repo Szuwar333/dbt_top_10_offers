@@ -1,5 +1,5 @@
 [sqlfluff]
-dialect = trino
+dialect = postgres
 templater = dbt
 # main
 max_line_length = 120

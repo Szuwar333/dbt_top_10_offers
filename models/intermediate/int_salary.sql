@@ -54,7 +54,7 @@ select
     ---------- numbers
     rate,
 
-    ---------- dates
+    ---------- timestamps
     created_at
 
 from salary

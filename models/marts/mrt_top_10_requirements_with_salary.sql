@@ -36,7 +36,7 @@ migration_batches as (
 
 top_10_with_salary as (
     select
-		top_10.migration_batch_id,
+        req.migration_batch_id,
         top_10.requirement,
         salary.rate_eur,
         salary.rate_usd,
@@ -45,19 +45,22 @@ top_10_with_salary as (
         salary.job_type,
         salary.origin_source
     from top_10
-    join req
-        on top_10.requirement = req.requirement
-		and top_10.migration_batch_id = req.migration_batch_id
-    join salary
-        on req.offer_id = salary.offer_id
-        and req.origin_source = salary.origin_source
-		and  req.migration_batch_id = salary.migration_batch_id
+    inner join req
+        on
+            top_10.requirement = req.requirement
+            and top_10.migration_batch_id = req.migration_batch_id
+    inner join salary
+        on
+            req.offer_id = salary.offer_id
+            and req.origin_source = salary.origin_source
+            and req.migration_batch_id = salary.migration_batch_id
 
 ),
 
 top_10_with_salary_with_grouped_rates as (
     select
-		migration_batch_id,
+        migration_batch_id,
+        requirement,
         min(rate_eur) as min_rate_eur,
         min(rate_usd) as min_rate_usd,
         min(rate_pln) as min_rate_pln,
@@ -76,10 +79,11 @@ top_10_with_salary_with_grouped_rates as (
         percentile_cont(0.5) within group (
             order by rate_pln
         ) as median_rate_pln,
-        count(1),
-        requirement
+        count(*) as row_count
     from top_10_with_salary
-        group by migration_batch_id, requirement
+    group by
+        migration_batch_id,
+        requirement
 ),
 
 top_10_with_salary_with_grouped_rates_and_migration_batches as (
@@ -98,11 +102,11 @@ top_10_with_salary_with_grouped_rates_and_migration_batches as (
         top_10.median_rate_eur,
         top_10.median_rate_usd,
         top_10.median_rate_pln,
-        top_10.count,
+        top_10.row_count,
         migration_batches.migration_started_at,
         migration_batches.migration_status
     from top_10_with_salary_with_grouped_rates as top_10
-    join migration_batches
+    inner join migration_batches
         on top_10.migration_batch_id = migration_batches.migration_batch_id
 )
 
@@ -127,10 +131,11 @@ select
     median_rate_eur,
     median_rate_usd,
     median_rate_pln,
-    count,
+    row_count,
 
     ----------------- dates
     migration_started_at
 
 from top_10_with_salary_with_grouped_rates_and_migration_batches
-    order by migration_batch_id, count desc
+order by
+    migration_batch_id asc, row_count desc
