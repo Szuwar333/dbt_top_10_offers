@@ -21,25 +21,28 @@ with salary_range as (
         created_at
     from {{ ref('int_nofluffjobs__salary') }}
 ),
+
 currencies as (
     select
         currency_code,
         currency_name
     from {{ ref('currencies') }}
 ),
-salary as(
+
+salary as (
     select
-        offer_id,
-        migration_batch_id,
-        currency,
-        currencies.currency_name as currency_name,
-        origin_source,
-        job_type,
-        (rate_from + COALESCE(rate_to, rate_from)) / 2 as rate,
-        created_at
+        salary_range.offer_id,
+        salary_range.migration_batch_id,
+        salary_range.currency,
+        currencies.currency_name,
+        salary_range.origin_source,
+        salary_range.job_type,
+        salary_range.created_at,
+        (salary_range.rate_from + coalesce(salary_range.rate_to, salary_range.rate_from)) / 2 as rate
     from salary_range
-        left join currencies on currencies.currency_code = salary_range.currency
+    left join currencies on salary_range.currency = currencies.currency_code
 )
+
 select
     ---------- ids
     offer_id,

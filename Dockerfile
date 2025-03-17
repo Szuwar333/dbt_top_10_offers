@@ -22,7 +22,6 @@ COPY entrypoint.py entrypoint.py
 # COPY packages.yml packages.yml
 # COPY dbt_run.py /usr/python/
 RUN dbt deps
-RUN dbt seed
 # CMD dbt run --profiles-dir /dbt
 CMD ["python", "entrypoint.py"]
 

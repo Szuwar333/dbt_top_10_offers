@@ -7,10 +7,15 @@ load_dotenv()
 
 def run_action(dbt_action):
     if dbt_action == "run":
-        print('RUNNING DBT')
+        print('RUNNING SEED')
         # initialize
         dbt = dbtRunner()
 
+        # run DBT SEED
+        cli_args = ["seed"]
+        res: dbtRunnerResult = dbt.invoke(cli_args)
+
+        print('RUNNING DBT')
         # create CLI args as a list of strings
         cli_args = ["run", "--select", "dbt_top_10_offers"]
 

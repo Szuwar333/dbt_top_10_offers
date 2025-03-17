@@ -1,5 +1,7 @@
 with requirement as (
-    select *
+    select
+        migration_batch_id,
+        requirement
     from {{ ref('int_requirements') }}
 ),
 

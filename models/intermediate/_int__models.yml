@@ -24,7 +24,7 @@ models:
     database: mydedb
     columns:
       - name: rate
-        description: "Migration batch id"
+        description: "Salary rate"
         tests:
           - not_null
           - dbt_expectations.expect_column_to_exist
@@ -32,4 +32,124 @@ models:
               min_value: 0
               inclusive: false
 
+  - name: int_requirements_10_most_common
+    description: "Intermediate data - top 10 most common requirements"
+    schema: intermediate
+    database: mydedb
+    columns:
+      - name: ranking_within_batch_id
+        description: "Ranking per batch id"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true
+              max_value: 10
+              inclusive: true
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - requirement
 
+  - name: int_migration_batches_with_currency
+    description: >
+      "Intermediate data - the most up-to-date currency exchange rate for the migration batch - USD, EUR, PLN"
+      "most up-to-date means the most recent course with a date less than the date the migration batch was generated"
+
+    schema: intermediate
+    database: mydedb
+    columns:
+      - name: rate
+        description: "Currency rate"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: base
+        description: "Currency base"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+      - name: target
+        description: "Currency target"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - rate
+            - base
+
+  - name: int_salary_converted_currency
+    description: >
+      "Intermediate data - salary rate for all offers converted to USD, EUR, PLN"
+
+    schema: intermediate
+    database: mydedb
+
+    columns:
+      - name: rate_usd
+        description: "Salary rate in USD"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: rate_eur
+        description: "Salary rate in EUR"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: rate_pln
+        description: "Salary rate in PLN"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - offer_id
+            - origin_source
+            - job_type
+
+
+  - name: int_salary
+    description: >
+      "Intermediate data - salary rate for all offers in native currency"
+
+    schema: intermediate
+    database: mydedb
+
+    columns:
+      - name: rate
+        description: "Salary rate in native currency"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_to_exist
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - offer_id
+            - origin_source
+            - job_type
