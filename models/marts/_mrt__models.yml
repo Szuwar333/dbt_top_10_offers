@@ -13,6 +13,18 @@ models:
           - not_null
           - dbt_expectations.expect_column_to_exist
 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - migration_batch_id
+            - requirement
+      - dbt_utils.recency:
+              datepart: day
+              field: migration_started_at
+              interval: 3
+              meta:
+                description: "Data is older than 3 days"
+
     freshness:
       warn_after:
         count: 1
@@ -22,9 +34,3 @@ models:
         period: day
 
     loaded_at_field: migration_started_at
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - migration_batch_id
-            - requirement
